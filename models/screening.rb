@@ -19,4 +19,30 @@ class Screening
     ticket = SqlRunner.run(sql, values)[0]
     @id = ticket['id'].to_i
   end
+
+  def update()
+    sql = " UPDATE screenings SET (film_id, screening_time, capacity) = ($1, $2, $3) WHERE id = $4"
+    values = [@film_id, @screening_time, @capacity, @id]
+    SqlRunner.run(sql, values)
+  end
+
+  def delete()
+    sql = "DELETE FROM screenings where id = $1"
+    values = [@id]
+    SqlRunner.run(sql, values)
+  end
+
+  def self.all()
+    sql = "SELECT * FROM screenings"
+    screenings = SqlRunner.run(sql)
+    result = screenings.map{ |screening| Screening.new( screening )}
+    return result
+  end
+
+  def self.delete_all
+    sql = "DELETE FROM screenings"
+    values = []
+    SqlRunner.run(sql)
+  end
+
 end

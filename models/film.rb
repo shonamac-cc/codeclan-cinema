@@ -1,4 +1,5 @@
 require_relative('../db/sql_runner')
+require('time')
 
 class Film
 
@@ -74,5 +75,15 @@ class Film
     values = [@id]
     price_data = SqlRunner.run(sql, values)[0]
     return price_data["price"].to_i
+  end
+
+  def popular_time()
+    sql = "SELECT screening_time, capacity, film_id FROM screenings
+    INNER JOIN tickets
+    ON tickets.screening_id = screenings.id
+    WHERE screenings.film_id = $1"
+    values = [@id]
+    screenings = SqlRunner.run(sql, values)
+    screening_times = screenings.map { |screening| Screening.new(screening).screening_time }
   end
 end

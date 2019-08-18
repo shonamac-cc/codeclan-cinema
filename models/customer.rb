@@ -78,7 +78,7 @@ class Customer
 
   # Check if customer has sufficient funds then calculate customer funds based on one film and add ticket for the film to tickets table
   def buy(film)
-    if @funds >= film.film_price
+    if @funds >= film.film_price 
       bought_ticket = Ticket.new({ 'customer_id' => @id, 'film_id' => film.id})
       bought_ticket.save
       @funds -= film.film_price
