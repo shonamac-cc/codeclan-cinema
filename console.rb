@@ -19,7 +19,7 @@ customer3.save()
 
 film1 = Film.new({ 'title' => 'Shawshank Redemption', 'price' => 10})
 film2 = Film.new({ 'title' => 'Finding Nemo', 'price' => 8})
-film3 = Film.new({ 'title' => 'Fast and Furious', 'price' => 10})
+film3 = Film.new({ 'title' => 'Fast and Furious', 'price' => 9})
 
 film1.save()
 film2.save()
