@@ -54,18 +54,24 @@ class Customer
     WHERE customer_id = $1"
     values = [@id]
     film_data = SqlRunner.run(sql, values)
-    films = film_data.map{ |film_data| Customer.new(film_data)}
+    films = film_data.map{ |film_data| Film.new(film_data)}
     return films
   end
 
   def film_count()
-    # sql = "SELECT films.* FROM films
-    # INNER JOIN tickets ON films.id = tickets.film_id
-    # WHERE customer_id = $1"
-    # values = [@id]
-    # film_data = SqlRunner.run(sql, values)
-    # films = film_data.map{ |film_data| Customer.new(film_data)}
     return films.count
+  end
+
+  def tickets()
+    sql = "SELECT * FROM tickets where customer_id = $1"
+    values = [@id]
+    ticket_data = SqlRunner.run(sql, values)
+    return ticket_data.map{ |ticket| Ticket.new(ticket) }
+  end
+
+  def buy(film)
+    @funds -= film.film_price
+    update
   end
 
 end
