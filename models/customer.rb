@@ -61,6 +61,14 @@ class Customer
     return films.count
   end
 
+  # count number of tickets a customer has using sql query
+  def ticket_count_sql()
+    sql = "SELECT COUNT(*) FROM tickets
+    WHERE customer_id = $1"
+    values = [@id]
+    SqlRunner.run(sql, values)[0]['count'].to_i
+  end
+
   def tickets()
     sql = "SELECT * FROM tickets where customer_id = $1"
     values = [@id]
@@ -68,13 +76,19 @@ class Customer
     return ticket_data.map{ |ticket| Ticket.new(ticket) }
   end
 
-  # calculate customer funds based on one film whether they have a ticket for or not
+  # Check if customer has sufficient funds then calculate customer funds based on one film and add ticket for the film to tickets table
   def buy(film)
-    @funds -= film.film_price
-    update
+    if @funds >= film.film_price
+      bought_ticket = Ticket.new({ 'customer_id' => @id, 'film_id' => film.id})
+      bought_ticket.save
+      @funds -= film.film_price
+      update
+    end
+    return "insufficient funds, ask your mate for a loan"
   end
 
   # calculate customer funds based on all films they have tickets for, used imdb end code as an example
+  # This creates an array of the price for all films a customer is going to see, converts to an integer, then combines all the values.  This combined price is then deducted from customer funds
   def remaining_funds()
     films = self.films()
     film_prices = films.map{ |film| film.price.to_i}
