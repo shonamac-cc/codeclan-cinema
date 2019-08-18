@@ -54,8 +54,7 @@ class Customer
     WHERE customer_id = $1"
     values = [@id]
     film_data = SqlRunner.run(sql, values)
-    films = film_data.map{ |film_data| Film.new(film_data)}
-    return films
+    return film_data.map{ |film| Film.new(film)}
   end
 
   def film_count()
@@ -69,8 +68,18 @@ class Customer
     return ticket_data.map{ |ticket| Ticket.new(ticket) }
   end
 
+  # calculate customer funds based on one film whether they have a ticket for or not
   def buy(film)
     @funds -= film.film_price
+    update
+  end
+
+  # calculate customer funds based on all films they have tickets for, used imdb end code as an example
+  def remaining_funds()
+    films = self.films()
+    film_prices = films.map{ |film| film.price.to_i}
+    combined_prices = film_prices.sum
+    @funds -= combined_prices
     update
   end
 
